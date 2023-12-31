@@ -22,13 +22,21 @@ namespace Coursework2001.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Add any additional configurations here if needed
+            modelBuilder.Entity<User>()
+                .HasKey(ua => new { ua.Email });
+
+            modelBuilder.Entity<Activities>()
+                .HasKey(ua => new { ua.ActivityID });
+
+
+
             modelBuilder.Entity<UserActivities>()
                 .HasKey(ua => new { ua.UserActivitiesID });
 
             modelBuilder.Entity<UserActivities>()
                 .HasOne(ua => ua.User)
                 .WithMany(u => u.UserActivities)
-                .HasForeignKey(ua => ua.UserID);
+                .HasForeignKey(ua => ua.Email);
 
             modelBuilder.Entity<UserActivities>()
                 .HasOne(ua => ua.Activity)

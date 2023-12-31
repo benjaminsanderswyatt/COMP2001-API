@@ -3,7 +3,7 @@
     public class UserActivities
     {
         public int UserActivitiesID { get; set; }
-        public int UserID { get; set; }
+        public string Email { get; set; }
         public int ActivityID { get; set; }
 
         // Navigation properties for the relationships
