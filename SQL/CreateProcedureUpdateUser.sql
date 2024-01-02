@@ -1,6 +1,6 @@
 CREATE PROCEDURE CW2.UpdateUserAndActivities
 (
-    @Email VARCHAR,
+    @Email VARCHAR(320),
     @Username VARCHAR(100),
     @Password VARCHAR(30) = NULL,
     @About_Me VARCHAR(500),
@@ -18,7 +18,6 @@ BEGIN
     UPDATE [CW2].[Users]
     SET
         [Username] = @Username,
-        [Email] = @Email,
         [Password] = ISNULL(@Password,[Password]),
         [About_Me] = @About_Me,
         [Location] = @Location,
