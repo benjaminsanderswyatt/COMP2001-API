@@ -1,25 +1,39 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System.Text;
 
 namespace Coursework2001.Models
 {
     public class Authenticate
     {
-        private static string connectionString = "Data Source=dist-6-505.uopnet.plymouth.ac.uk;Initial Catalog=COMP2001_BSanderswyatt;User ID=BSanderswyatt;Password=HmoN123*;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False";
-
-        public static string CreateProfile(CreateUser user)
+        public static async Task<string> AuthenticateUser(string email, string password)
         {
-            return "";
-        }
-            
-    }
+            using (HttpClient client = new HttpClient())
+            {
+                //admin validate uri
+                string apiUrl = "https://web.socem.plymouth.ac.uk/COMP2001/auth/api/users";
 
+                //body json
+                string jsonBody = $"{{\"Email\":\"{email}\", \"Password\":\"{password}\"}}";
+                StringContent content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+
+                //Check the response status
+                if (response.IsSuccessStatusCode)
+                {
+                    string result = await response.Content.ReadAsStringAsync();
+
+                    //TODO: I will need to check if the request content returned valid or invalid
+                    //this will then create a session token and mark the session as being logged in by the user
+
+
+                    return "Request successful. Response: " + result;
+
+                }
+                else
+                {
+                    return "An error occurred: " + response;
+                }
+            }
+        }
+    }
 }

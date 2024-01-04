@@ -16,32 +16,37 @@ namespace Coursework2001.Models
 
         // DbSet properties for the tables
         public DbSet<User> Users { get; set; }
-        public DbSet<Activities> Activities { get; set; }
         public DbSet<UserActivities> UserActivities { get; set; }
+        public DbSet<Activities> Activities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasDefaultSchema("CW2");
+
             // Add any additional configurations here if needed
+
+            // Configure primary keys
             modelBuilder.Entity<User>()
-                .HasKey(ua => new { ua.Email });
+                .HasKey(u => u.Email);
 
             modelBuilder.Entity<Activities>()
-                .HasKey(ua => new { ua.ActivityID });
-
-
+                .HasKey(a => a.ActivityID);
 
             modelBuilder.Entity<UserActivities>()
-                .HasKey(ua => new { ua.UserActivitiesID });
+                .ToTable("User-Activities")
+                .HasKey(ua => ua.UserActivitiesID);
 
+            // Configure relationships
             modelBuilder.Entity<UserActivities>()
                 .HasOne(ua => ua.User)
                 .WithMany(u => u.UserActivities)
                 .HasForeignKey(ua => ua.Email);
 
             modelBuilder.Entity<UserActivities>()
-                .HasOne(ua => ua.Activity)
+                .HasOne(ua => ua.Activities)
                 .WithMany(a => a.UserActivities)
                 .HasForeignKey(ua => ua.ActivityID);
+
         }
 
 

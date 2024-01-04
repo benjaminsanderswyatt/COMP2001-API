@@ -8,6 +8,6 @@
 
         // Navigation properties for the relationships
         public User User { get; set; }
-        public Activities Activity { get; set; }
+        public Activities Activities { get; set; }
     }
 }
