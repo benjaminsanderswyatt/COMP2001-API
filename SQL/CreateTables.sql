@@ -15,7 +15,6 @@ CREATE TABLE [CW2].[Users](
 [Activ_Time_Pref_Is_Speed] [BIT] DEFAULT 1 NOT NULL,
 [Marketing_Language] [varchar](30) NOT NULL,
 [Is_Archived] [BIT] DEFAULT 0 NOT NULL,
-[Is_Admin] [BIT] DEFAULT 0 NOT NULL,
 [Last_Updated] [smalldatetime]
 );
 
@@ -51,14 +50,15 @@ GO
 
 INSERT INTO [CW2].[Users] 
 
-(Email,Username,[Password],About_Me,[Location],Birthday,Height_cm,[Weight_kg],Pref_Units_Is_Metric,Activ_Time_Pref_Is_Speed,Marketing_Language,Is_Archived,Is_Admin,Last_Updated) VALUES 
+(Email,Username,[Password],About_Me,[Location],Birthday,Height_cm,[Weight_kg],Pref_Units_Is_Metric,Activ_Time_Pref_Is_Speed,Marketing_Language,Is_Archived,Last_Updated) VALUES 
 
-('grace@plymouth.ac.uk','Grace Hopper','ISAD123!','About Me','Plymouth, Devon, England','1990-01-01',150.00,55.50,1,1,'English (UK)',0,1, GETDATE()),
-('tim@plymouth.ac.uk','Tim Berners-Lee','COMP2001!',null,null,null,null,null,1,0,'English (US)',0,1, GETDATE()),
-('ada@plymouth.ac.uk','Ada Lovelace','insecurePassword','My name is ada','Plymouth, Devon, England','1995-11-23',180.80,70.00,0,0,'Dansk (Danmark)',0,1, GETDATE()),
-('adamsmith@gmail.com','Adam Smith','passw0rd','Im me','London, County of London, England','2001-07-17',160.23,6.090,1,1,'English (UK)',1, GETDATE()),
-('bethbarron@yahoo.com','Beth Barron','123456789','Im me beth','Plymouth, Devon, England','2010-05-26',225.89,650.67,0,0,'Deutsch (Deutschland)',1, GETDATE());
-
+('grace@plymouth.ac.uk','Grace Hopper','ISAD123!','About Me','Plymouth, Devon, England','1990-01-01',150.00,55.50,1,1,'English (UK)',0, GETDATE()),
+('tim@plymouth.ac.uk','Tim Berners-Lee','COMP2001!',null,null,null,null,null,1,0,'English (US)',0, GETDATE()),
+('ada@plymouth.ac.uk','Ada Lovelace','insecurePassword','My name is ada','Plymouth, Devon, England','1995-11-23',180.80,70.00,0,0,'Dansk (Danmark)',0, GETDATE()),
+('adamsmith@gmail.com','Adam Smith','passw0rd','Im me','London, County of London, England','2001-07-17',160.23,6.090,1,1,'English (UK)',0, GETDATE()),
+('bethbarron@yahoo.com','Beth Barron','123456789','Im me beth','Plymouth, Devon, England','2010-05-26',225.89,650.67,0,0,'Deutsch (Deutschland)',0, GETDATE()),
+('charlie@gmail.com','Charlie Cake','securePassword','Im me','London, County of London, England','1999-05-12',130.55,70.30,1,0,'English (UK)',1, GETDATE()),
+('dave@gmail.com','Dave Daniels','random','Im me','London, County of London, England','2006-07-17',200.00,300.00,0,1,'English (UK)',1, GETDATE());
 GO 
 
 INSERT INTO [CW2].[Activities] 

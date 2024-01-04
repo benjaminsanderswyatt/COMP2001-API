@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Coursework2001.Models
+﻿namespace Coursework2001.Models
 {
     public class User
     {

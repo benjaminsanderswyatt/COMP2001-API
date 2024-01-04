@@ -12,13 +12,6 @@ FROM [CW2].[Users]
 WHERE [Is_Archived] = 1;
 GO
 
-CREATE VIEW [CW2].[AdminView]
-AS
-SELECT *
-FROM [CW2].[Users]
-WHERE [Is_Admin] = 1;
-GO
-
 CREATE VIEW [CW2].[UserActivitiesView]
 AS
 SELECT
