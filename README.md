@@ -26,13 +26,13 @@ api/admin/unarchive
 
 #### Users
 **GET**
-api/user/
+api/user/get-user
 
 **PUT**
-api/user/
+api/user/update
 
 **DELETE**
-api/user/
+api/user/delete
 
 ### SQL files
 The SQL files were used to create my database which was hosted by the university.
