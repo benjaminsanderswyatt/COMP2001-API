@@ -6,6 +6,9 @@ using System.Data;
 
 namespace Coursework2001.Controllers
 {
+    /// <summary>
+    /// Controller for managing accounts
+    /// </summary>
     [Route("api/account/")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -17,6 +20,11 @@ namespace Coursework2001.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Validates a user's login credentials and generates an authentication token
+        /// </summary>
+        /// <param name="login">The login credentials</param>
+        /// <returns>ActionResult of the Authentication result and an authentication token.</returns>
         [HttpPost("login")]
         public async Task<ActionResult<string>> ValidUser(Login login)
         {
@@ -24,6 +32,8 @@ namespace Coursework2001.Controllers
 
             if (authResult.IsArchived)
             {
+                //The account is archived and therefore cant be accessed
+                //admins are always unarchived no matter what
                 return Unauthorized(new { userArchived = true });
             }
 
@@ -42,9 +52,12 @@ namespace Coursework2001.Controllers
             return Unauthorized(new { verified = false });
         }
 
-        //CREATE a user
+        /// <summary>
+        /// Creates a new user
+        /// </summary>
+        /// <param name="createUser">User details for registration</param>
+        /// <returns>ActionResult saying how the delete went</returns>
         [HttpPost("register")]
-        [EndpointDescription("Registers a new user.")]
         public async Task<ActionResult<string>> Register([FromBody] CreateUser createUser)
         {
             try
@@ -69,7 +82,7 @@ namespace Coursework2001.Controllers
                         cmd.Parameters.Add(new SqlParameter("@Password", createUser.Password));
                         cmd.Parameters.Add(new SqlParameter("@Marketing_Language", createUser.Marketing_Language));
 
-                        //Execute the stored procedure
+                        //Execute the stored procedure (CreateProfile)
                         await cmd.ExecuteNonQueryAsync();
 
                     }

@@ -8,6 +8,9 @@ using System.Security.Claims;
 
 namespace Coursework2001.Controllers
 {
+    /// <summary>
+    /// Controller for managing admin actions
+    /// </summary>
     [Route("api/admin/")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -19,7 +22,11 @@ namespace Coursework2001.Controllers
             _context = context;
         }
 
-        //ARCHIVE user
+        /// <summary>
+        /// Archives a user
+        /// </summary>
+        /// <param name="email">Email of the user to be archived</param>
+        /// <returns>ActionResult saying how the archive went</returns>
         [HttpPost("archive")]
         [Authorize]
         public async Task<ActionResult<string>> ArchiveUser(string email)
@@ -60,7 +67,7 @@ namespace Coursework2001.Controllers
 
                                 cmd.Parameters.Add(new SqlParameter("@Email", email));
 
-                                // Execute the stored procedure
+                                // Execute the stored procedure (ArchiveUser)
                                 await cmd.ExecuteNonQueryAsync();
                             }
                         }
@@ -91,7 +98,11 @@ namespace Coursework2001.Controllers
 
         }
 
-        //UNARCHIVE user
+        /// <summary>
+        /// Unarchives a user
+        /// </summary>
+        /// <param name="email">Email of the user to be unarchived</param>
+        /// <returns>ActionResult saying how the unarchive went</returns>
         [HttpPost("unarchive")]
         [Authorize]
         public async Task<ActionResult<string>> UnArchiveUser(string email)
@@ -132,7 +143,7 @@ namespace Coursework2001.Controllers
 
                                 cmd.Parameters.Add(new SqlParameter("@Email", email));
 
-                                // Execute the stored procedure
+                                // Execute the stored procedure (UnArchiveUser)
                                 await cmd.ExecuteNonQueryAsync();
                             }
                         }

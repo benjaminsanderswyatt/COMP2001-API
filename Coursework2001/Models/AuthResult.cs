@@ -12,15 +12,21 @@
             IsAdmin = isAdmin;
             IsArchived = isArchived;
         }
-
-        public static AuthResult Success(bool isAdmin, bool isArchived)
+        public static AuthResult SuccessAdmin()
         {
-            return new AuthResult(true, isAdmin, isArchived);
+            return new AuthResult(true, true, false);//archiving an admin does nothing
         }
+
+        public static AuthResult Success(bool isArchived)
+        {
+            return new AuthResult(true, false, isArchived);//valid user
+        }
+
+
 
         public static AuthResult Failure()
         {
-            return new AuthResult(false, false, false);
+            return new AuthResult(false, false, false);//invalid user
         }
     }
 

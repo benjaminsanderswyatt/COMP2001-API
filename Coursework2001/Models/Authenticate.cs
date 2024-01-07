@@ -15,12 +15,9 @@ namespace Coursework2001.Models
             //is admin?
             bool isValidAdmin = await AuthenticateAdmin(login);
 
-            //TODO: When the admin is chosen none of the other data is taken (to fix get the user first then get the admin)
-            //TODO: when the user is archived add to the token and then check before
-
             if (isValidAdmin)
             {
-                return AuthResult.Success(true, false); //Authorised admin, cant be archived
+                return AuthResult.SuccessAdmin(); //Authorised admin, cant be archived
             }
 
             //is user?
@@ -28,11 +25,11 @@ namespace Coursework2001.Models
 
             if (result[0])
             {
-                return AuthResult.Success(false, result[1]);//Authorised User, is_archived?
+                return AuthResult.Success(result[1]);//pass through is the user archived
             }
             else
             {
-                return AuthResult.Failure();
+                return AuthResult.Failure();//authentication failed
             }
         }
 
@@ -49,27 +46,21 @@ namespace Coursework2001.Models
 
                 HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
-                //Check the response status
-                if (response.IsSuccessStatusCode)
-                {
-                    string result = await response.Content.ReadAsStringAsync();
-                    //result in format ["Verified","False"] or ["Verified","True"]
-                    var jsonArrayResult = System.Text.Json.JsonSerializer.Deserialize<string[]>(result);
+                
+                string result = await response.Content.ReadAsStringAsync();
+                //result in format ["Verified","False"] or ["Verified","True"]
+                var jsonArrayResult = System.Text.Json.JsonSerializer.Deserialize<string[]>(result);
 
-                    if (jsonArrayResult != null && jsonArrayResult[1].Equals("True", StringComparison.OrdinalIgnoreCase))
-                    {
-                        //Authorised admin
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                if (jsonArrayResult != null && jsonArrayResult[1].Equals("True", StringComparison.OrdinalIgnoreCase))
+                {
+                    //Authorised admin
+                    return true;
                 }
                 else
                 {
                     return false;
                 }
+                
             }
         }
         public static async Task<bool[]> AuthenticateUser(Login login, COMP2001_BSanderswyattContext _context)

@@ -8,6 +8,9 @@ using System.Security.Claims;
 
 namespace Coursework2001.Controllers
 {
+    /// <summary>
+    /// Controller for user actions
+    /// </summary>
     [Route("api/user/")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -18,32 +21,24 @@ namespace Coursework2001.Controllers
         {
             _context = context;
         }
-        
-        //GET self data
-        [HttpGet("get-self")]
-        [Authorize]
-        public async Task<ActionResult<string>> GetSelf()
-        {
-            //Get the users email token claims
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
-            if (email != null)
-            {
-                return await GetAllUserData(email, true);
-            }
 
-            return BadRequest("Please login first");
-        }
-
-        //GET someones data
+        /// <summary>
+        /// Gets user data based on the email
+        /// </summary>
+        /// <param name="email">The target user for getting data</param>
+        /// <returns>User data as ActionResult</returns>
         [HttpGet("get-user")]
         [Authorize]
         public async Task<ActionResult<string>> GetUser(string email)
         {
             //Get the users role from token claims
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            //gets the current user from token claims
+            var currentUserEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
-            if (userRole == "admin")
+            if (userRole == "admin" || currentUserEmail == email)
             {
+                //user is an admin or accessing their own data
                 return await GetAllUserData(email, true);
             }
             else
@@ -76,7 +71,11 @@ namespace Coursework2001.Controllers
             }
         }
 
-        //UPDATE user details
+        /// <summary>
+        /// Updates user data
+        /// </summary>
+        /// <param name="updateUser">New user data</param>
+        /// <returns>ActionResult saying how the update went</returns>
         [HttpPut("update")]
         [Authorize]
         public async Task<ActionResult<string>> UpdateUser([FromBody] UpdateUser updateUser)
@@ -94,79 +93,47 @@ namespace Coursework2001.Controllers
                         return BadRequest(ModelState);
                     }
 
-                    // Check if email is valid
-                    try
-                    {
-                        var mailAddress = new System.Net.Mail.MailAddress(email);
-                    }
-                    catch (FormatException)
-                    {
-                        return BadRequest("Invalid Email");
-                    }
-
                     using (SqlConnection connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
                     {
                         await connection.OpenAsync();
 
-                        bool userFound = false;
 
-                        //check if the user with email exists
-                        var userExistsQuery = "SELECT 1 FROM CW2.Users WHERE Email = @Email";
-                        using (SqlCommand checkUserCmd = new SqlCommand(userExistsQuery, connection))
+                        //run the stored procedure
+                        using (SqlCommand cmd = new SqlCommand("CW2.UpdateUserAndActivities", connection))
                         {
-                            checkUserCmd.Parameters.Add(new SqlParameter("@Email", email));
 
-                            var result = await checkUserCmd.ExecuteScalarAsync();
-                            if (result != null)
+                            cmd.CommandType = CommandType.StoredProcedure;
+
+                            cmd.Parameters.Add(new SqlParameter("@Email", email));
+                            cmd.Parameters.Add(new SqlParameter("@Username", updateUser.Username));
+                            cmd.Parameters.Add(new SqlParameter("@Password", updateUser.Password));
+                            cmd.Parameters.Add(new SqlParameter("@About_Me", updateUser.About_Me));
+                            cmd.Parameters.Add(new SqlParameter("@Location", updateUser.Location));
+                            cmd.Parameters.Add(new SqlParameter("@Birthday", updateUser.Birthday));
+                            cmd.Parameters.Add(new SqlParameter("@Height_cm", updateUser.Height_cm));
+                            cmd.Parameters.Add(new SqlParameter("@Weight_kg", updateUser.Weight_kg));
+                            cmd.Parameters.Add(new SqlParameter("@Pref_Units_Is_Metric", updateUser.Pref_Units_Is_Metric));
+                            cmd.Parameters.Add(new SqlParameter("@Activ_Time_Pref_Is_Speed", updateUser.Activ_Time_Pref_Is_Speed));
+                            cmd.Parameters.Add(new SqlParameter("@Marketing_Language", updateUser.Marketing_Language));
+
+                            //Create the datatable for activities list
+                            DataTable activityTable = new DataTable();
+                            activityTable.Columns.Add("ActivityID", typeof(int));
+
+                            foreach (var activity in updateUser.Activities)
                             {
-                                userFound = true;
+                                activityTable.Rows.Add(activity);
                             }
+
+                            SqlParameter tvpParam = cmd.Parameters.AddWithValue("@ActivityList", activityTable);
+                            tvpParam.SqlDbType = SqlDbType.Structured;
+                            tvpParam.TypeName = "CW2.TempActivityList";
+
+
+                            // Execute the stored procedure (UpdateUserAndActivities)
+                            await cmd.ExecuteNonQueryAsync();
                         }
-
-                        if (userFound)
-                        {
-                            //run the stored procedure
-                            using (SqlCommand cmd = new SqlCommand("CW2.UpdateUserAndActivities", connection))
-                            {
-
-                                cmd.CommandType = CommandType.StoredProcedure;
-
-                                cmd.Parameters.Add(new SqlParameter("@Email", email));
-                                cmd.Parameters.Add(new SqlParameter("@Username", updateUser.Username));
-                                cmd.Parameters.Add(new SqlParameter("@Password", updateUser.Password));
-                                cmd.Parameters.Add(new SqlParameter("@About_Me", updateUser.About_Me));
-                                cmd.Parameters.Add(new SqlParameter("@Location", updateUser.Location));
-                                cmd.Parameters.Add(new SqlParameter("@Birthday", updateUser.Birthday));
-                                cmd.Parameters.Add(new SqlParameter("@Height_cm", updateUser.Height_cm));
-                                cmd.Parameters.Add(new SqlParameter("@Weight_kg", updateUser.Weight_kg));
-                                cmd.Parameters.Add(new SqlParameter("@Pref_Units_Is_Metric", updateUser.Pref_Units_Is_Metric));
-                                cmd.Parameters.Add(new SqlParameter("@Activ_Time_Pref_Is_Speed", updateUser.Activ_Time_Pref_Is_Speed));
-                                cmd.Parameters.Add(new SqlParameter("@Marketing_Language", updateUser.Marketing_Language));
-
-                                //Create the datatable for activities list
-                                DataTable activityTable = new DataTable();
-                                activityTable.Columns.Add("ActivityID", typeof(int));
-
-                                foreach (var activity in updateUser.Activities)
-                                {
-                                    activityTable.Rows.Add(activity);
-                                }
-
-                                SqlParameter tvpParam = cmd.Parameters.AddWithValue("@ActivityList", activityTable);
-                                tvpParam.SqlDbType = SqlDbType.Structured;
-                                tvpParam.TypeName = "CW2.TempActivityList";
-
-
-                                // Execute the stored procedure
-                                await cmd.ExecuteNonQueryAsync();
-                            }
-                        }
-                        else
-                        {
-                            // Return a NotFound response if the user with the provided email does not exist
-                            return NotFound("User not found.");
-                        }
-
+                           
                     }
 
                     return Ok("User updated successfully.");
@@ -188,8 +155,11 @@ namespace Coursework2001.Controllers
             }
 
         }
-        
-        //DELETE self
+
+        /// <summary>
+        /// Deletes the current user
+        /// </summary>
+        /// <returns>ActionResult saying how the delete went</returns>
         [HttpDelete("delete")]
         [Authorize]
         public async Task<ActionResult<string>> DeleteUser()
@@ -219,7 +189,7 @@ namespace Coursework2001.Controllers
 
                         cmd.Parameters.Add(new SqlParameter("@Email", email));
 
-                        //Execute the stored procedure
+                        //Execute the stored procedure (DeleteUser)
                         int result = await cmd.ExecuteNonQueryAsync();
 
                         //Was the delete successful
