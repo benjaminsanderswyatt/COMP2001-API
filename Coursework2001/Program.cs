@@ -71,11 +71,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
+
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
-app.UseHttpsRedirection();
 
 // Enable authentication middleware
 app.UseAuthentication();

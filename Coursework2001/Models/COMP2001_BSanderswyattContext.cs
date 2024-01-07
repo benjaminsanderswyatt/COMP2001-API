@@ -13,7 +13,7 @@ namespace Coursework2001.Models
         {
         }
 
-        // DbSet properties for the tables
+        //DbSet properties for the tables
         public DbSet<User> Users { get; set; }
         public DbSet<UserActivities> UserActivities { get; set; }
         public DbSet<Activities> Activities { get; set; }
@@ -21,8 +21,6 @@ namespace Coursework2001.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("CW2");
-
-            // Add any additional configurations here if needed
 
             // Configure primary keys
             modelBuilder.Entity<User>()

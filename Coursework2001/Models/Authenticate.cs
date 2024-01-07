@@ -15,17 +15,20 @@ namespace Coursework2001.Models
             //is admin?
             bool isValidAdmin = await AuthenticateAdmin(login);
 
+            //TODO: When the admin is chosen none of the other data is taken (to fix get the user first then get the admin)
+            //TODO: when the user is archived add to the token and then check before
+
             if (isValidAdmin)
             {
-                return AuthResult.Success(true); //Authorised admin
+                return AuthResult.Success(true, false); //Authorised admin, cant be archived
             }
 
             //is user?
-            bool isValidUser = await AuthenticateUser(login, _context);
+            bool[] result = await AuthenticateUser(login, _context);
 
-            if (isValidUser)
+            if (result[0])
             {
-                return AuthResult.Success(false);//Authorised User
+                return AuthResult.Success(false, result[1]);//Authorised User, is_archived?
             }
             else
             {
@@ -69,7 +72,7 @@ namespace Coursework2001.Models
                 }
             }
         }
-        public static async Task<bool> AuthenticateUser(Login login, COMP2001_BSanderswyattContext _context)
+        public static async Task<bool[]> AuthenticateUser(Login login, COMP2001_BSanderswyattContext _context)
         {
             using (SqlConnection connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
             {
@@ -83,27 +86,34 @@ namespace Coursework2001.Models
                     cmd.Parameters.Add(new SqlParameter("@Password", login.Password));
 
                     // Add output parameter to capture the result value
-                    SqlParameter resultParameter = new SqlParameter("@Verified", SqlDbType.NVarChar, 10)
+                    SqlParameter verifiedParameter = new SqlParameter("@Verified", SqlDbType.Bit)
                     {
                         Direction = ParameterDirection.Output
                     };
-                    cmd.Parameters.Add(resultParameter);
+                    cmd.Parameters.Add(verifiedParameter);
+
+                    SqlParameter isArchivedParameter = new SqlParameter("@IsArchived", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(isArchivedParameter);
 
                     // Execute the stored procedure
                     await cmd.ExecuteNonQueryAsync();
 
-                    string? result = resultParameter.Value.ToString();
+                    bool isVerified = (bool)verifiedParameter.Value;
 
-                    //Was the delete successful
-                    if (result != null && result.Equals("true", StringComparison.OrdinalIgnoreCase))
+                    //Was the verification successful
+                    if (isVerified)
                     {
                         //success
-                        return true;
+                        bool isArchived = (bool)isArchivedParameter.Value;
+                        return [true, isArchived] ;
                     }
                     else
                     {
                         //User not found
-                        return false;
+                        return [false, true];
                     }
                 }
 

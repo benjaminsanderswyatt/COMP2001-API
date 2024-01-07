@@ -3,7 +3,7 @@
 
 namespace Coursework2001.Models
 {
-    public class Helper
+    public class GetHelper
     {
         //what data should be returned in get request depending on the users auth
         public static object UserDataToShow(User user, bool isSelfOrAdmin)
@@ -23,6 +23,7 @@ namespace Coursework2001.Models
                     user.Pref_Units_Is_Metric,
                     user.Activ_Time_Pref_Is_Speed,
                     user.Marketing_Language,
+                    user.Is_Archived,
                     user.Last_Updated,
                     UserActivities = user.UserActivities.Select(ua => ua.Activities.Activity_Name).ToList()
                 };

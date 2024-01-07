@@ -18,28 +18,7 @@ namespace Coursework2001.Controllers
         {
             _context = context;
         }
-
-        [HttpPost("login")]
-        public async Task<ActionResult<string>> ValidUser(Login login)
-        {
-            AuthResult authResult = await Authenticate.AuthenticateUserOrAdmin(login, _context);
-
-            if (authResult.IsValid)
-            {
-                string authToken = Authenticate.GenerateAuthToken(login.Email, authResult.IsAdmin);
-
-                this.Response.Headers.Add("api_key", authToken);
-
-                HttpContext.Session.SetString(authToken, "verified");
-
-                return Ok(new { verified = true, token = authToken });
-            }
-
-            // Unauthorized
-            return Unauthorized(new { verified = false });
-        }
-
-
+        
         //GET self data
         [HttpGet("get-self")]
         [Authorize]
@@ -81,7 +60,7 @@ namespace Coursework2001.Controllers
                 .Where(u => u.Email == email)
                 .Include(u => u.UserActivities)
                 .ThenInclude(ua => ua.Activities)
-                .Select(u => Helper.UserDataToShow(u, isSelfOrAdmin))
+                .Select(u => GetHelper.UserDataToShow(u, isSelfOrAdmin))
                 .FirstOrDefaultAsync();
             
                 if (userWithActivities == null)
@@ -96,57 +75,6 @@ namespace Coursework2001.Controllers
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
-
-
-        //CREATE a user
-        [HttpPost("register")]
-        public async Task<ActionResult<string>> Register([FromBody] CreateUser createUser)
-        {
-            try
-            {
-                // Check if valid
-                if (!ModelState.IsValid)
-                {
-                    //Return what is wrong with the data validation
-                    return BadRequest(ModelState);
-                }
-
-                using (SqlConnection connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
-                {
-                    await connection.OpenAsync();
-
-                    using (SqlCommand cmd = new SqlCommand("CW2.CreateProfile", connection))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-
-                        cmd.Parameters.Add(new SqlParameter("@Username", createUser.Username));
-                        cmd.Parameters.Add(new SqlParameter("@Email", createUser.Email));
-                        cmd.Parameters.Add(new SqlParameter("@Password", createUser.Password));
-                        cmd.Parameters.Add(new SqlParameter("@Marketing_Language", createUser.Marketing_Language));
-
-                        //Execute the stored procedure
-                        await cmd.ExecuteNonQueryAsync();
-
-                    }
-                }
-                return Ok("Registration successful.");
-            } catch (SqlException ex) {
-
-                //does email already exist (not unique)
-                if (ex.Number == 2627 || ex.Number == 2601)
-                {
-                    return BadRequest("Email already exists. Could not register user.");
-                }
-                else
-                {
-                    return StatusCode(500, "An error occurred: " + ex.Message);
-                }
-            } catch (Exception ex) {
-
-                return StatusCode(500, "An error occurred: " + ex.Message);
-            }
-        }
-
 
         //UPDATE user details
         [HttpPut("update")]
@@ -260,25 +188,7 @@ namespace Coursework2001.Controllers
             }
 
         }
-
-
-        //DELETE any user (only admins)
-        [HttpDelete("admin-delete")]
-        [Authorize]
-        public async Task<ActionResult<string>> AdminDeleteUser(string email)
-        {
-            //Get the users role from token claims
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-            
-            if (userRole == "admin")
-            {
-                return await Delete(email);
-            }
-
-            return BadRequest("User is not an admin");
-
-        }
-
+        
         //DELETE self
         [HttpDelete("delete")]
         [Authorize]
@@ -338,153 +248,6 @@ namespace Coursework2001.Controllers
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
-
-
-        //ARCHIVE user
-        [HttpDelete("archive")]
-        [Authorize]
-        public async Task<ActionResult<string>> ArchiveUser(string email)
-        {
-            //Get the users role from token claims
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (userRole == "admin")
-            {
-                try
-                {
-                    using (SqlConnection connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
-                    {
-                        await connection.OpenAsync();
-
-                        bool userFound = false;
-
-                        //check if the user with email exists
-                        var userExistsQuery = "SELECT 1 FROM CW2.Users WHERE Email = @Email";
-                        using (SqlCommand checkUserCmd = new SqlCommand(userExistsQuery, connection))
-                        {
-                            checkUserCmd.Parameters.Add(new SqlParameter("@Email", email));
-
-                            var result = await checkUserCmd.ExecuteScalarAsync();
-                            if (result != null)
-                            {
-                                userFound = true;
-                            }
-                        }
-
-                        if (userFound)
-                        {
-                            //run the stored procedure
-                            using (SqlCommand cmd = new SqlCommand("CW2.ArchiveUser", connection))
-                            {
-
-                                cmd.CommandType = CommandType.StoredProcedure;
-
-                                cmd.Parameters.Add(new SqlParameter("@Email", email));
-
-                                // Execute the stored procedure
-                                await cmd.ExecuteNonQueryAsync();
-                            }
-                        }
-                        else
-                        {
-                            // Return a NotFound response if the user with the provided email does not exist
-                            return NotFound("User not found.");
-                        }
-
-                    }
-
-                    return Ok("User has been archived.");
-
-                }
-                catch (SqlException ex)
-                {
-                    //Sql error
-                    return StatusCode(500, "An error occurred: " + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    //other error
-                    return StatusCode(500, "An error occurred: " + ex.Message);
-                }
-            }
-
-            return BadRequest("User is not an admin");
-
-        }
-
-        //UNARCHIVE user
-        [HttpDelete("unarchive")]
-        [Authorize]
-        public async Task<ActionResult<string>> UnArchiveUser(string email)
-        {
-            //Get the users role from token claims
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (userRole == "admin")
-            {
-                try
-                {
-                    using (SqlConnection connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
-                    {
-                        await connection.OpenAsync();
-
-                        bool userFound = false;
-
-                        //check if the user with email exists
-                        var userExistsQuery = "SELECT 1 FROM CW2.Users WHERE Email = @Email";
-                        using (SqlCommand checkUserCmd = new SqlCommand(userExistsQuery, connection))
-                        {
-                            checkUserCmd.Parameters.Add(new SqlParameter("@Email", email));
-
-                            var result = await checkUserCmd.ExecuteScalarAsync();
-                            if (result != null)
-                            {
-                                userFound = true;
-                            }
-                        }
-
-                        if (userFound)
-                        {
-                            //run the stored procedure
-                            using (SqlCommand cmd = new SqlCommand("CW2.UnArchiveUser", connection))
-                            {
-
-                                cmd.CommandType = CommandType.StoredProcedure;
-
-                                cmd.Parameters.Add(new SqlParameter("@Email", email));
-
-                                // Execute the stored procedure
-                                await cmd.ExecuteNonQueryAsync();
-                            }
-                        }
-                        else
-                        {
-                            // Return a NotFound response if the user with the provided email does not exist
-                            return NotFound("User not found.");
-                        }
-
-                    }
-
-                    return Ok("User has been unarchived.");
-
-                }
-                catch (SqlException ex)
-                {
-                    //Sql error
-                    return StatusCode(500, "An error occurred: " + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    //other error
-                    return StatusCode(500, "An error occurred: " + ex.Message);
-                }
-            }
-
-            return BadRequest("User is not an admin");
-
-        }
-
-
 
 
 

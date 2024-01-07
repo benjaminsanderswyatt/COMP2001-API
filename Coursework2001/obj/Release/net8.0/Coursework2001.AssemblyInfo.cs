@@ -12,9 +12,9 @@ using System;
 using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("Coursework2001")]
-[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+02dc55ae2bc621da05a786cf9ebc4baa69bbcd67")]
 [assembly: System.Reflection.AssemblyProductAttribute("Coursework2001")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Coursework2001")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

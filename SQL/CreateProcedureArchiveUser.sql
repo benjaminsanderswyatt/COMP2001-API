@@ -1,5 +1,5 @@
 CREATE PROCEDURE CW2.ArchiveUser
-    @Email VARCHAR
+    @Email VARCHAR(320)
 AS
 BEGIN
     UPDATE [CW2].[Users]

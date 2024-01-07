@@ -14,7 +14,6 @@
         public bool? Activ_Time_Pref_Is_Speed { get; set; } = true;
         public string? Marketing_Language { get; set; }
         public bool? Is_Archived { get; set; } = false;
-        public bool? Is_Admin { get; set; } = false;
         public DateTime? Last_Updated { get; set; }
 
         public List<UserActivities> UserActivities { get; set; }
