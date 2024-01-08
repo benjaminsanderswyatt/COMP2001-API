@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Coursework2001</name>
+    </assembly>
+    <members>
+        <member name="T:Coursework2001.Controllers.AccountController">
+            <summary>
+            Controller for managing accounts
+            </summary>
+        </member>
+        <member name="M:Coursework2001.Controllers.AccountController.ValidUser(Coursework2001.Models.Login)">
+            <summary>
+            Validates a user's login credentials and generates an authentication token
+            </summary>
+            <param name="login">The login credentials</param>
+            <returns>ActionResult of the Authentication result and an authentication token.</returns>
+        </member>
+        <member name="M:Coursework2001.Controllers.AccountController.Register(Coursework2001.Models.CreateUser)">
+            <summary>
+            Creates a new user
+            </summary>
+            <param name="createUser">User details for registration</param>
+            <returns>ActionResult saying how the delete went</returns>
+        </member>
+        <member name="T:Coursework2001.Controllers.AdminController">
+            <summary>
+            Controller for managing admin actions
+            </summary>
+        </member>
+        <member name="M:Coursework2001.Controllers.AdminController.ArchiveUser(System.String)">
+            <summary>
+            Archives a user
+            </summary>
+            <param name="email">Email of the user to be archived</param>
+            <returns>ActionResult saying how the archive went</returns>
+        </member>
+        <member name="M:Coursework2001.Controllers.AdminController.UnArchiveUser(System.String)">
+            <summary>
+            Unarchives a user
+            </summary>
+            <param name="email">Email of the user to be unarchived</param>
+            <returns>ActionResult saying how the unarchive went</returns>
+        </member>
+        <member name="T:Coursework2001.Controllers.UsersController">
+            <summary>
+            Controller for user actions
+            </summary>
+        </member>
+        <member name="M:Coursework2001.Controllers.UsersController.GetUser(System.String)">
+            <summary>
+            Gets user data based on the email
+            </summary>
+            <param name="email">The target user for getting data</param>
+            <returns>User data as ActionResult</returns>
+        </member>
+        <member name="M:Coursework2001.Controllers.UsersController.UpdateUser(Coursework2001.Models.UpdateUser)">
+            <summary>
+            Updates user data
+            </summary>
+            <param name="updateUser">New user data</param>
+            <returns>ActionResult saying how the update went</returns>
+        </member>
+        <member name="M:Coursework2001.Controllers.UsersController.DeleteUser">
+            <summary>
+            Deletes the current user
+            </summary>
+            <returns>ActionResult saying how the delete went</returns>
+        </member>
+    </members>
+</doc>

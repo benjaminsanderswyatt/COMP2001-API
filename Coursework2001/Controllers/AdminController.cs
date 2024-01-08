@@ -29,7 +29,7 @@ namespace Coursework2001.Controllers
         /// <returns>ActionResult saying how the archive went</returns>
         [HttpPost("archive")]
         [Authorize]
-        public async Task<ActionResult<string>> ArchiveUser(string email)
+        public async Task<ActionResult<string>> ArchiveUser(ArchiveUser archiveUser)
         {
             //Get the users role from token claims
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
@@ -48,7 +48,7 @@ namespace Coursework2001.Controllers
                         var userExistsQuery = "SELECT 1 FROM CW2.Users WHERE Email = @Email";
                         using (SqlCommand checkUserCmd = new SqlCommand(userExistsQuery, connection))
                         {
-                            checkUserCmd.Parameters.Add(new SqlParameter("@Email", email));
+                            checkUserCmd.Parameters.Add(new SqlParameter("@Email", archiveUser.Email));
 
                             var result = await checkUserCmd.ExecuteScalarAsync();
                             if (result != null)
@@ -65,7 +65,7 @@ namespace Coursework2001.Controllers
 
                                 cmd.CommandType = CommandType.StoredProcedure;
 
-                                cmd.Parameters.Add(new SqlParameter("@Email", email));
+                                cmd.Parameters.Add(new SqlParameter("@Email", archiveUser.Email));
 
                                 // Execute the stored procedure (ArchiveUser)
                                 await cmd.ExecuteNonQueryAsync();

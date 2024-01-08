@@ -47,4 +47,5 @@ C:\Users\bensw\Work Docs\Comp2001\Coursework Part 2\Coursework2001-Part2\COMP200
 C:\Users\bensw\Work Docs\Comp2001\Coursework Part 2\Coursework2001-Part2\COMP2001-Assessment-2\Coursework2001\obj\Release\net8.0\PubTmp\Out\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 C:\Users\bensw\Work Docs\Comp2001\Coursework Part 2\Coursework2001-Part2\COMP2001-Assessment-2\Coursework2001\obj\Release\net8.0\PubTmp\Out\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\bensw\Work Docs\Comp2001\Coursework Part 2\Coursework2001-Part2\COMP2001-Assessment-2\Coursework2001\obj\Release\net8.0\PubTmp\Out\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\bensw\Work Docs\Comp2001\Coursework Part 2\Coursework2001-Part2\COMP2001-Assessment-2\Coursework2001\obj\Release\net8.0\PubTmp\Out\Coursework2001.xml
 C:\Users\bensw\Work Docs\Comp2001\Coursework Part 2\Coursework2001-Part2\COMP2001-Assessment-2\Coursework2001\obj\Release\net8.0\PubTmp\Out\Coursework2001.deps.json

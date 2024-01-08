@@ -92,6 +92,13 @@ namespace Coursework2001.Controllers
                         //Return what is wrong with the inputted data
                         return BadRequest(ModelState);
                     }
+                    foreach(int activity in updateUser.Activities)
+                    {
+                        if(activity <= 0 || activity >= 20)
+                        {
+                            return BadRequest(activity + " isnt a valid activity id");
+                        }
+                    }
 
                     using (SqlConnection connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
                     {
