@@ -11,28 +11,51 @@ This microservices aim is to provide endpoints which can be used to create, read
 
 ### Endpoints
 #### Accounts
-**POST**
-api/account/login
 
-**POST**
-api/account/register
+```http
+POST api/account/login
+```
+
+<img src="SwaggerImages/Account-Login.png" height="450">
+
+
+```http
+POST api/account/register
+```
+
+<img src="SwaggerImages/Account-Register.png" height="450">
 
 #### Admin
-**POST**
-api/admin/archive
 
-**POST**
-api/admin/unarchive
+```http
+POST api/admin/archive
+```
+
+<img src="SwaggerImages/Admin-Archive.png" height="450">
+
+```http
+POST api/admin/unarchive
+```
+
+<img src="SwaggerImages/Admin-Unarchive.png" height="450">
 
 #### Users
-**GET**
-api/user/get-user
 
-**PUT**
-api/user/update
+```http
+GET api/user/get-user
+```
 
-**DELETE**
-api/user/delete
+<img src="SwaggerImages/User-GetUser.png" height="450">
+
+```http
+PUT api/user/update
+```
+<img src="SwaggerImages/User-Update.png" height="450">
+
+```http
+DELETE api/user/delete
+```
+<img src="SwaggerImages/User-Delete.png" height="450">
 
 ### SQL files
 The SQL files were used to create my database which was hosted by the university.
