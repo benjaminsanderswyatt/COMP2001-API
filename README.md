@@ -16,14 +16,14 @@ This microservices aim is to provide endpoints which can be used to create, read
 POST api/account/login
 ```
 
-<img src="SwaggerImages/Account-Login.png" height="450">
+<img src="SwaggerImages/Account-Login.png">
 
 
 ```http
 POST api/account/register
 ```
 
-<img src="SwaggerImages/Account-Register.png" height="450">
+<img src="SwaggerImages/Account-Register.png">
 
 #### Admin
 
@@ -31,13 +31,13 @@ POST api/account/register
 POST api/admin/archive
 ```
 
-<img src="SwaggerImages/Admin-Archive.png" height="450">
+<img src="SwaggerImages/Admin-Archive.png">
 
 ```http
 POST api/admin/unarchive
 ```
 
-<img src="SwaggerImages/Admin-Unarchive.png" height="450">
+<img src="SwaggerImages/Admin-Unarchive.png">
 
 #### Users
 
@@ -45,17 +45,17 @@ POST api/admin/unarchive
 GET api/user/get-user
 ```
 
-<img src="SwaggerImages/User-GetUser.png" height="450">
+<img src="SwaggerImages/User-GetUser.png">
 
 ```http
 PUT api/user/update
 ```
-<img src="SwaggerImages/User-Update.png" height="450">
+<img src="SwaggerImages/User-Update.png">
 
 ```http
 DELETE api/user/delete
 ```
-<img src="SwaggerImages/User-Delete.png" height="450">
+<img src="SwaggerImages/User-Delete.png">
 
 ### SQL files
 The SQL files were used to create my database which was hosted by the university.
